@@ -19,7 +19,7 @@ import com.example.currency_converter_service.Config.RestTemplateConfig;
 import com.example.currency_converter_service.bean.CurrencyConverter;
 
 @RestController
-@RequestMapping("/currency-conversion")
+@RequestMapping("/currency-converter")
 public class CurrencyConverterController {
 	
 	@Autowired

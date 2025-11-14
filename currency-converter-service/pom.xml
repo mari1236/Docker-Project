@@ -110,6 +110,13 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<image>
+						<name>irfanmaria/mm2-${project.artifactId}:${project.version}</name>
+					</image>
+					<!-- maven lot of maven image. if not present then build it. No present locally then otherwise use it -->
+					<pullPolicy>IF_NOT_PRESENT</pullPolicy>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

@@ -1,0 +1,76 @@
+version: '3.5.7'
+
+services:
+  currency-exchange:
+    image: irfanmaria/mm2-currency-exchange-service:0.0.1-SNAPSHOT
+    mem_limit: 700m
+    ports:
+      - "1020:1020"
+    networks:
+      - currency-network
+    depends_on:
+      - name-registry
+    environment:
+      SPRING_APPLICATION_NAME: currency-exchange-service
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://name-registry:1200/eureka
+      EUREKA.INSTANCE.PREFERRED_IP_ADDRESS: currency-exchange
+      EUREKA.INSTANCE.HOSTNAME: currency-exchange
+      EUREKA.INSTANCE.NON_SECURE_PORT: 1020
+      MANAGEMENT.ZIPKIN.TRACING.ENDPOINT: http://zipkin-server:9411/api/v2/spans
+  
+  currency-converter:
+    image: irfanmaria/mm2-currency-converter-service:0.0.1-SNAPSHOT
+    mem_limit: 700m
+    ports:
+      - "1180:1180"
+    networks:
+      - currency-network
+    depends_on:
+      - name-registry
+    environment:
+      SPRING_APPLICATION_NAME: currency-converter-service
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://name-registry:1200/eureka
+      EUREKA.INSTANCE.PREFERRED_IP_ADDRESS: currency-converter
+      EUREKA.INSTANCE.HOSTNAME: currency-converter
+      EUREKA.INSTANCE.NON_SECURE_PORT: 1180
+      MANAGEMENT.ZIPKIN.TRACING.ENDPOINT: http://zipkin-server:9411/api/v2/spans    
+  
+  api-gateway:
+    image: irfanmaria/mm2-api-gateway:0.0.1-SNAPSHOT
+    mem_limit: 700m
+    ports:
+      - "1300:1300"
+    networks:
+      - currency-network
+    depends_on:
+      - name-registry
+    environment:
+      SPRING_APPLICATION_NAME: api-gateway-service
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://name-registry:1200/eureka
+      EUREKA.INSTANCE.PREFERRED_IP_ADDRESS: api-gateway
+      EUREKA.INSTANCE.HOSTNAME: api-gateway
+      EUREKA.INSTANCE.NON_SECURE_PORT: 1300
+      MANAGEMENT.ZIPKIN.TRACING.ENDPOINT: http://zipkin-server:9411/api/v2/spans      
+          
+  
+
+  name-registry:
+    image: irfanmaria/mm2-name-registry-service:0.0.1-SNAPSHOT
+    mem_limit: 700m
+    ports:
+      - "1200:1200"
+    networks:
+      - currency-network
+
+# docker run -p 9411:9411 openzipkin/zipkin:2.23   (Run for zipkin)
+  
+  zipkin-server:
+    image: openzipkin/zipkin:2.23
+    mem_limit: 300m
+    ports:
+     - "9411:9411"
+    networks:
+      - currency-network 
+
+networks:
+  currency-network:
